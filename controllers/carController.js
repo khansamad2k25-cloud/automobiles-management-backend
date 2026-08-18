@@ -12,8 +12,29 @@ const getSingleCar = asyncHandler(async (req, res) => {
 });
 
 const addCar = asyncHandler(async (req, res) => {
-    const data = await service.addCar(req.body);
-    res.status(201).json({ success: true, data });
+
+    const payload = req.body;
+
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid request payload"
+        });
+    }
+
+    if (Object.keys(payload).length === 0) {
+        return res.status(400).json({
+            success: false,
+            message: "Request body cannot be empty"
+        });
+    }
+
+    const data = await service.addCar(payload);
+
+    res.status(201).json({
+        success: true,
+        data
+    });
 });
 
 const updateCar = asyncHandler(async (req, res) => {
